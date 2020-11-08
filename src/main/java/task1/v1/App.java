@@ -1,4 +1,4 @@
-package task1;
+package task1.v1;
 
 public class App {
     public static final int maxSteps = 6;

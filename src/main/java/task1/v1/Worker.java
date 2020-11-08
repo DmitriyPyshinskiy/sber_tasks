@@ -1,4 +1,4 @@
-package task1;
+package task1.v1;
 
 public enum Worker {
     PING_WORKER,

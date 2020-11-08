@@ -1,4 +1,4 @@
-package task1;
+package task1.v1;
 
 public class AbstractWorker {
     private final ResourceHolder resourceHolder;
