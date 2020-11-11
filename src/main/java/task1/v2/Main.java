@@ -1,18 +1,18 @@
 package task1.v2;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final Resource res = new Resource();
     private static final Semaphore semaphore = new Semaphore(1, true);
+    private static final ExecutorService service = Executors.newFixedThreadPool(2);
 
-    public static void main(String[] args) throws InterruptedException {
-        Thread pingThread = new Thread(new PingPongThread(res, "ping", semaphore), "PING");
-        Thread pongThread = new Thread(new PingPongThread(res, "pong", semaphore), "PONG");
-        pingThread.start();
-        TimeUnit.MILLISECONDS.sleep(100);
-        pongThread.start();
+    public static void main(String[] args) {
+        service.submit(new PingPongThread(res, "ping", semaphore), "PING");
+        service.submit(new PingPongThread(res, "pong", semaphore), "PONG");
         doPrint();
     }
 
@@ -20,7 +20,10 @@ public class Main {
         while(true) {
             try {
                 semaphore.acquire();
-                if(PingPongManager.isGameOver()) break;
+                if(PingPongManager.isGameOver()) {
+                    service.shutdown();
+                    break;
+                }
                 if("print".equals(PingPongManager.getNextThread())) {
                     TimeUnit.MILLISECONDS.sleep(700);
                     String value = res.getRes();
